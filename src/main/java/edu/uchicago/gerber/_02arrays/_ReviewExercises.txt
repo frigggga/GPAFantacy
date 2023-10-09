@@ -16,5 +16,161 @@ Notice that the varargs parameter "String... strNickNames" must be listed last. 
 
 
 
+R5.6 What is the difference between an argument and a return value? How many arguments can a method call have? How many return values?
+
+    In java, argument is passed to a method when we call it, but a return value is an output returned from the method after some computation.
+We can have as many argument as we want, but we can only have one return value for one method.
+
+
+R5.8 Write pseudocode for a method that translates a telephone number with letters in it (such as 1-800-FLOWERS) into the actual phone number. Use the standard letters on a phone pad.
+
+    pseudocode: scan and examine each character in loop, and for each character:
+            if it is a number, do nothing and continue;
+            if it is a character, change it to a number according to standard letters on a phone pad
+                for case "ABC" translate to digits 2
+                for case "DEF" translate to digits 3
+                for case "GHI" translate to digits 4
+                for case "JKL" translate to digits 5
+                for case "MNO" translate to digits 6
+                for case "PQRS" translate to digits 7
+                for case "TUV" translate to digits 8
+                for case "WXYZ" translate to digits 9
+
+            return the revised string
+
+R5.10 For each of the variables in the following program, indicate the scope. Then determine what the program prints, without actually running the program.
+
+    variable i declared in line 5: its scope is in the main method
+    variable b declared in line 6: its scope is in the main method
+    variable i declared in line 10: line 10-15
+    variable n declared in line 12: within the f() method
+    variable a declared in line 17: line 17-26
+    variable b declared in line 19: line 19-24
+    Variable n declared in line 20: Scope is limited to the for loop block from line 20-24
+    Variable i declared in line 22: Scope is limited to the for loop block from line 22-24
+
+    The program prints 26.
+
+
+R5.14 Consider the following method that is intended to swap the values of two integers:
+
+    The falseSwap() method doesn't swap the contents of x and y because parameters are passed by value in Java. When we pass variables x and y to the falseSwap method, we are passing the values of x and y but not their references.
+ In this case, the falseSwap() method receives copies of x and y, and any changes made to those copies inside the method do not affect the original values of x and y. Thus we cannot swap the content of x and y by this method.
+
+R6.3 Considering loops
+
+    a. 25
+    b. 13
+    c. 12
+    d. throws IndexOutOfBound exception
+    e. 11
+    f. 25
+    g. 12
+    e. -1
+
+R6.10 Rewrite the following loops, using the enhanced for loop construct. Here, values is an array of floating-point numbers.
+
+    a. for(double d : values){
+            total += d;
+       }
+    b. for(double d : values){
+            total += d;
+       }
+       total -= values[0];
+    c. int cnt = 0;
+       for(double d: values){
+            if(d == target){
+                break;
+            }else{
+                cnt++;
+            }
+       }
+       return cnt;
+
+R6.23 Computing runs
+
+    name two integer variables current and max, current = max = 1;
+    looping through the array from index 1, for each number:
+        if it is the same with its left neighbor(index - 1), current++;
+            if(current > max): max = current
+        if it is not the same with its left neighbor, current = 1
+    return max
+
+R6.29 Multi-dimensional arrays
+
+    a. for (int i = 0; i < ROWS; i++) {
+           for (int j = 0; j < COLUMNS; j++) {
+               values[i][j] = 0;
+           }
+       }
+    b. for (int i = 0; i < ROWS; i++) {
+           for (int j = 0; j < COLUMNS; j++) {
+               values[i][j] = (i + j) % 2;
+           }
+       }
+    c. for (int j = 0; j < COLUMNS; j++) {
+           values[0][j] = 0;
+           values[ROWS - 1][j] = 0;
+       }
+    d. int sum = 0;
+       for (int i = 0; i < ROWS; i++) {
+           for (int j = 0; j < COLUMNS; j++) {
+               sum += values[i][j];
+           }
+       }
+    e. for (int i = 0; i < ROWS; i++) {
+           for (int j = 0; j < COLUMNS; j++) {
+               System.out.print(values[i][j] + "\t");
+           }
+           System.out.println();
+       }
+
+R6.34 Understanding arrays
+
+    a. True
+    b. True
+    c. False
+    d. True
+    e. False
+    f. False
+
+R7.1 What happens if you try to open a file for reading that doesn’t exist? What happens if you try to open a file for writing that doesn’t exist?
+
+    If we try to open a file for reading that doesn't exist, the program will encounter an "FileNotFound" error.
+    If we try to open a file for writing that doesn't exist, java will automatically create a new file with the specified name for us.
+
+R7.6 Throwing and catching
+
+     Throwing an exception is the process of indicating that a specific exception has occurred. Usage: using the throw keyword followed by an exception instance.
+     Catching an exception is the process of handling and responding to that exception. Usage: try-catch blocks. It allows us to manage and recover from errors to prevent our program from crashing.
+
+R7.7 What is a checked exception? What is an unchecked exception? Give an example for each. Which exceptions do you need to declare with the throws reserved word?
+
+    checked exception: are exceptions that are checked by the compiler at compile time. The compiler requires us to use a try-catch block or a "throw" word to handle that exception during compile time.
+        example: throw an IOException when trying to read a file.
+    unchecked exception: They are exceptions that are not checked by the compiler at compile time and are occurred at runtime. It's not required to use exception handling.
+        example: NullPointerException
+
+    We use the "throws" keyword to declare checked exceptions that can be thrown by a method.
+
+R7.8 Why don’t you need to declare that your method might throw an IndexOutOfBoundException?
+
+    First, IndexOutOfBoundException is an unchecked exception, and Java allows us to handle unchecked exceptions without declaring them.
+    This exception occurs at runtime and is hard to be checked merely through throwing exceptions during compile time .
+
+R7.11 What can your program do with the exception object that a catch clause receives?
+
+    a. We can detect which type of exception we are going to catch by examine the class of the exception object; for example, we can catch IOException.
+    b. We can print out human-readable note and log the exception message one we catch that exception message, this can help us better understand what's going on with the code and handling it.
+    c. We can also print the stack trace of the exception using the printStackTrace() method.
+    d. We can throw a new exception, wrap the exception, or rethrow the same exception in the catch clause.
+
+R7.15 Which exceptions can the next and nextInt methods of the Scanner class throw? Are they checked exceptions or unchecked exceptions?
+
+    NoSuchElementException();
+    InputMisMatchException();
+    IllegalStateException();
+
+    They are all unchecked exceptions because they typically occurred at runtime due to data type inconsistencies or human typo, hence can hardly be checked or handled during compile time.
 
 
