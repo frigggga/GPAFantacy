@@ -4,6 +4,58 @@
 
 
 
+R8.1 Encapsulation
 
+Referring to the book, encapsulation is the act of providing a public interface and hiding the implementation details.
+We use encapsulation because it can help us to better protect our data and security. Other program or class cannot see
+the detail of our code implementation details, which is also suit for code organization, flexibility, and easy to manage.
+
+R8.4 Public interface
+
+The public interface of a class is the set of methods, fields, and properties that external code can access and interact with.
+The implementation of a class includes all the internal details and mechanisms that make the class function, which often contains multiple private methods.
+The difference between them is that while the public interface is what external code interacts with, the implementation is how we build and create the class with a constructor.
+
+R8.7 Instance versus static
+
+An instance method use implicit parameter, which associates with instances. (e.g. str.indexOf(’a’).
+In contrast, a static method is associated with the class itself.
+A static method use class name or nothing before it (e.g. Math.pow(2).
+
+R8.8 Mutator and accessor
+
+A mutator method changes the value of the internal private parameters, while an accessor method does not change the internal value of private parameters,
+they simply get or access to that value.
+
+R8.9 Implicit parameter
+
+The object on which a method is invoked is called the implicit parameter of the method. In Java, we do not need to write the implicit parameter in the method declaration.
+However, we need to specify the explicit parameter in method declaration.
+
+R8.10 Implicit parameter
+
+In instance methods, there is only one implicit parameter and zero to many explicit parameters.
+In static methods, there are no implicit parameters but can have zero to many explicit parameters,
+
+R8.12 Constructors
+
+A class can have zero to many constructors.
+In the case a class has multiple constructors, the one that gets called depends on the arguments provided when we create an instance of that class.
+We match the parameter number and type to call specific constructors.
+
+R8.16 Instance variables
+
+The 'private' keyword prevents direct access to instance variables from outside the class. Though the class declaration is not hidden, we use the 'private' keyword to hide the internal implementation details to a significant extent. This also helps with information hiding and code abstraction.
+
+R8.19 The 'this' reference
+
+'This' refers to the current instance of a class or object. We use this keyword to help the program itself distinguishing instance variables and local parameters and accessing instance variables.
+
+R8.20 Zero, null, false, empty String
+
+zero is a numerical value.
+null reference is a special reference type that  used when a variable or reference should not point to any valid object or when a value is undefined or missing. Null reference points to no string at all, not even the empty string.
+false is a boolean value, which equals 0 in boolean value.
+empty string is a set of characters with no length. It represents an empty text that requires memory to store it.
 
 
