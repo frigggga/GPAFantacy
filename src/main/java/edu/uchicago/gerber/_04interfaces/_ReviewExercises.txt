@@ -3,7 +3,72 @@
 #########################################################################
 
 
+R9.1 Superclas and subclass
 
+a. Employee (Superclass), Manager (Subclass)
+b. GraduateStudent (Subclass), Student (Superclass)
+c. Person (Superclass), Student (Subclass)
+d. Employee (Superclass), Professor (Subclass)
+e. BankAccount (Superclass), CheckingAccount (Subclass)
+f. Vehicle (Superclass), Car (Subclass)
+g. Vehicle (Superclass), Minivan (Subclass)
+h. Car (Superclass), Minivan (Subclass)
+i. Truck (Subclass), Vehicle (Superclass)
 
+R9.2 superclass and subclass
+
+The small appliances such as toaster, car vacuum, and travel iron does not share a common characteristic, each of them has unique features and functionalities,
+and creating a superclass and multiple subclasses without shared characteristics can lead to a needlessly complex class hierarchy. Thus we do not use a structure of superclass SmallAppliance and subclasses of Toaster, CarVacuum, TravelIron.
+
+R9.4 SavingsAccount
+
+Inherited methods
+deposit(double amount)
+getBalance()
+
+Override methods
+withdraw(double amount)
+monthEnd()
+
+Added methods
+setInterestRate(double rate)
+
+R9.6 Sandwich
+
+a. legal because we assigned an instance of a subclass (Sub) to a reference of the superclass (Sandwich)
+b. Not legal because we cannot assign an instance of the superclass (Sandwich) to a reference of the subclass (Sub) without casting.
+c. Not legal because we cannot assign an instance of the superclass (Sandwich) to a reference of the subclass (Sub)
+d. Legal because we can assign an instance of a subclass (Sub) to a reference of the superclass (Sandwich).
+
+R9.7 Inheretence -use the UML diagram tool in IntelliJ and indicate to the grader where uml file is located
+
+R9.8 Inheretence -use the UML diagram tool in IntelliJ and indicate to the grader where uml file is located
+
+R9.9 Inheretence -use the UML diagram tool in IntelliJ and indicate to the grader where uml file is located
+
+R9.10 Casting
+
+BankAccount (x) is an example of casting an object reference, but int (x) is an example of casting a numeric value.
+The former one is used in the case when we cast a SavingsAccount object to a BankAccount reference.
+The later one is used when we want to cast a floating point number to an integer.
+
+R9.11 instanceof operator
+
+a. true
+b. true
+c. false
+d. true
+e. false
+f. false
+
+R9.14 Edible interface
+a. legal
+b. not legal
+c. legal
+d. not legal
+e. not legal
+f. not legal
+g. not legal
+h. legal
 
 
