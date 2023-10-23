@@ -40,11 +40,17 @@ b. Not legal because we cannot assign an instance of the superclass (Sandwich) t
 c. Not legal because we cannot assign an instance of the superclass (Sandwich) to a reference of the subclass (Sub)
 d. Legal because we can assign an instance of a subclass (Sub) to a reference of the superclass (Sandwich).
 
-R9.7 Inheretence -use the UML diagram tool in IntelliJ and indicate to the grader where uml file is located
+R9.7 Inheretence
+
+located in _04interfaces folder called R9_7
 
 R9.8 Inheretence -use the UML diagram tool in IntelliJ and indicate to the grader where uml file is located
 
+located in _04interfaces folder called R9_8
+
 R9.9 Inheretence -use the UML diagram tool in IntelliJ and indicate to the grader where uml file is located
+
+located in _04interfaces folder called R9_9
 
 R9.10 Casting
 
