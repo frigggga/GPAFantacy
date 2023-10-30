@@ -3,7 +3,64 @@
 #########################################################################
 
 
+R10.5 Events
 
+An event object is an instance of a class that contains information about the event, such as its type, source, and any relevant data.
+An event source generates events. These events could be user actions, system notifications, or other programmatic occurrences.
+Event listeners that are interested in the event receive the event object and execute their event-handling code in response to the event.
+
+R10.6 actionPerformed
+
+The actionPerformed method of an event listener is called by the Java Virtual Machine (JVM).
+It occurs when the event source triggers the associated event, typically by a user action or some other programmatic event.
+
+R10.11 Inner class and event-listeners
+
+Inner classes are often used for event listeners because they provide a way to encapsulate the event-handling code within the same class or scope where the event source is defined, and they have access to the private members of the containing class.
+We can define event listener classes as separate external classes. These classes implement the appropriate listener interfacec, which is useful when we want to reuse the same event listener for multiple components.
+
+R10.14 Object hierarchies
+
+Method declared in JTextArea:
+append(String str)
+
+Method inherited from JTextComponent:
+setText(String text):
+
+Method inherited from JComponent:
+setBackground(Color bg):
+
+R10.22 Graphic methods
+
+1. change g.setColor(Color.GREEN) to g.setColor(leftColor);
+2. change g.setColor(Color.RED) to g.setColor(Color.WHITE);
+3. change g.setColor(Color.BLACK) to g.setColor(rightColor);
+
+R11.2 Layout managers
+
+1. Layout managers ensure that your user interface components are positioned and sized correctly on different platforms and with different look and feel implementations.
+2. Layout managers adapt to changes in the container's size or the content's size.
+3. Layout managers help accommodate varying text sizes due to localization and internationalization.
+4. Code using layout managers is typically more maintainable.
+
+R11.11 ButtonGroup
+
+For radio buttons, we use a button group to ensure that only one option can be selected at a time.
+However, for check boxes, we don't use a button group because they are designed for multiple selections, and each check box operates independently.
+
+R11.19 Types of Events
+
+ActionEvent is associated with actions and explicit user requests, while MouseEvent relates to mouse-related interactions with components.
+We also handle the two events in two different ways: with action listeners used for ActionEvent and mouse listeners for MouseEvent.
+
+R11.20 Events
+
+The MouseEvent object provides more detailed information about mouse interactions, including the specific mouse button used, the mouse's position, and any modifiers held during the event.
+In contrast, the ActionEvent object primarily carries information related to actions triggered by UI components, such as buttons and menu items.
+
+R11.21 ActionListener versus MouseListener
+
+The ActionListener interface focuses on simple, high-level actions, while the MouseListener interface deals with the intricacies of mouse interactions, requiring multiple methods to cover the range of possibilities.
 
 
 
