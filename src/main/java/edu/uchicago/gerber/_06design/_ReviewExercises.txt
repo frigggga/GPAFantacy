@@ -3,7 +3,123 @@
 #########################################################################
 
 
+R12.1 OO Analysis and Design
 
+1. Requirement Analysis
+2. Specification
+3. System Design
+4. Class Identification
+5. Class Responsibilities
+6. Class Relationships(implement, inheritance)
+7. Prototyping
+8. Design Patterns and Principles
+9. implementation
+10. testing
 
+R12.2 OO Analysis and Design
 
+1. Identify the Nouns
+2. Refine the Nouns
+3. Establish Relationships
+4. Consider Design Principles
+
+R12.3 OO Analysis and Design
+
+1. Identify the Actions
+2. Associate Actions with Classes
+3. Define the Scope of Methods
+4. Determine Method Parameters and Return Types
+5. Look for Common Operations
+6. Evaluate Relationships for Method Delegation
+
+R12.8 Relationships
+
+Class: Coin
+Responsibilities:
+- Know its value
+- Report its value
+Collaborators:
+- CashRegister
+
+Class: CashRegister
+Responsibilities:
+- Hold a collection of coins
+- Add coins to the register
+- Compute the total value of coins
+- Remove coins
+- Provide change
+Collaborators:
+- Coin
+
+R12.9 CRC Quiz
+
+Class: Question
+Responsibilities:
+- Know the question text
+- Know the answer choices
+- Know the correct answer
+- Determine if an answer is correct
+Collaborators:
+- Quiz
+
+Class: Quiz
+Responsibilities:
+- Contain a list of questions
+- Add a question to the quiz
+- Remove a question from the quiz
+- Keep track of the current question for a user
+- Grade the quiz by evaluating all the answers
+Collaborators:
+- Question
+
+R12.10 UML Quiz
+
+See R12_10 located at 06_design directory
+
+R12.11 CRC Cards
+
+Class: Country
+Responsibilities:
+- Hold country details
+- Compute population density
+Collaborators:
+- CountryStatistics
+
+Class: CountryStatistics
+Responsibilities:
+- Read country records from file
+- Hold list of Country objects
+- Find country with largest area
+- Find country with largest pop.
+- Find country with highest pop. density
+Collaborators:
+- Country
+- FileReader
+
+Responsibilities:
+- Initiate program execution
+- Print results to console
+Collaborators:
+- CountryStatistics
+- Country
+
+class: country
+methods:getPupulationDensity(), getArea(), getPopulation()
+
+class: countryStatistics
+methods: readCountryData(), findCountryWithLargestArea(), findCountryWithPopulationDensity(), findCountryWithPopulation()
+
+See R12_11 located at 06_design/R12-11 directory
+
+R12.13 UML Diagram
+
+See R12_13 located at 06_design directory
+
+R12.14 UML Diagram
+
+See R12_14 located at 06_design directory
+
+R12.15 ULM Diagram
+
+See R12_15 located at 06_design directory
 
