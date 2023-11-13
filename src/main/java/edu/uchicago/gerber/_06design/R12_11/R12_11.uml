@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>edu.uchicago.gerber._06design.R12_11</OriginalElement>
+  <nodes>
+    <node x="36.5" y="0.0">edu.uchicago.gerber._06design.R12_11.Country</node>
+    <node x="0.0" y="78.0">edu.uchicago.gerber._06design.R12_11.CountryStatistics</node>
+    <node x="44.0" y="156.0">edu.uchicago.gerber._06design.R12_11.Driver</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="edu.uchicago.gerber._06design.R12_11.CountryStatistics" target="edu.uchicago.gerber._06design.R12_11.Country" relationship="TO_MANY">
+      <point x="46.5" y="-14.0" />
+      <point x="139.5" y="53.0" />
+      <point x="121.25" y="53.0" />
+      <point x="28.25" y="14.0" />
+    </edge>
+    <edge source="edu.uchicago.gerber._06design.R12_11.CountryStatistics" target="edu.uchicago.gerber._06design.R12_11.Country" relationship="CREATE">
+      <point x="-46.5" y="-14.0" />
+      <point x="46.5" y="53.0" />
+      <point x="64.75" y="53.0" />
+      <point x="-28.25" y="14.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="true" x="93.0" y="89.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
