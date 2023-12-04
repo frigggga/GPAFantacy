@@ -82,13 +82,15 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
 
         String statusText = "Number of Enemies Remaining: " + CommandCenter.getInstance().getNEnemiesToKill();
         graphics.drawString(statusText, 20, 750); //upper-left corner
-
+        List<String> statusArray = new ArrayList<>();
         //build the status string array with possible messages in middle of screen
-        if (CommandCenter.getInstance().checkAllEnemy())
-        { CommandCenter.getInstance().setPrompt(" Advanced to the next level");}
-        if(CommandCenter.getInstance().getPrompt()!= "") {
-            displayTextOnScreen(graphics, CommandCenter.getInstance().getPrompt());
+        if (CommandCenter.getInstance().checkAllEnemy() && CommandCenter.getInstance().hasStarted()) { CommandCenter.getInstance().setPrompt(" Advanced to the next level");}
+
+        if (CommandCenter.getInstance().getPrompt() != ""){
+            statusArray.add(CommandCenter.getInstance().getPrompt());
+            displayTextOnScreen(graphics, statusArray.toArray(new String[0]));
         }
+
 
 
     }
@@ -118,7 +120,7 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
 
         g.setColor(Color.ORANGE);
         g.setFont(new Font("SansSerif", Font.PLAIN, 15));
-        g.drawString("Current GPA: " + 4.0 * percentage, xVal - 10, yVal - 30);
+        g.drawString("Current GPA: " + 4.0 * percentage, xVal - 10, yVal - 20);
     }
 
     private void drawEnemyHealth(Graphics g){
@@ -127,17 +129,17 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
             int xVal = castEnemy.getCenter().x;
             int yVal =castEnemy.getCenter().y;
 
-            //draw meter
-            g.setColor(Color.RED);
             int percentage = castEnemy.getHealthPercentage();
-            g.fillRect(xVal, yVal - 20, percentage, 6);
+            //draw meter
             if(percentage > 0){
+                g.setColor(Color.RED);
+                g.fillRect(xVal - 25, yVal - 15, percentage, 6);
                 g.setColor(Color.DARK_GRAY);
-                g.drawRect(xVal, yVal - 20, 50, 6);
+                g.drawRect(xVal - 25, yVal - 15, 50, 6);
 
                 g.setColor(Color.white);
                 g.setFont(fontNormal);
-                g.drawString(castEnemy.getName(), xVal, yVal- 30 );
+                g.drawString(castEnemy.getName(), xVal - 25, yVal- 25 );
             }
         }
     }
@@ -162,8 +164,15 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
         //this is used for development, you may remove drawNumFrame() in your final game.
         drawNumFrame(grpOff);
         drawMenu(grpOff);
+        if(CommandCenter.getInstance().isGameEnd() || CommandCenter.getInstance().getCurHealth() <= 0){
+            CommandCenter.getInstance().clearAll();
+            grpOff.setColor(Color.white);
+            grpOff.setFont(fontBig);
+            grpOff.drawString("GAME OVER, type Q to quit", 300, 400);
 
-        if (CommandCenter.getInstance().hasInitialized()) {
+        }
+
+        if (!CommandCenter.getInstance().isPaused()) {
 
 
             moveDrawMovables(grpOff,
@@ -254,16 +263,14 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
     }
 
 
-    // This method draws some text to the middle of the screen
-    public void displayTextOnScreen(final Graphics graphics, String prompt) {
-        graphics.setColor(Color.RED);
+    private void displayTextOnScreen(final Graphics graphics, String... lines) {
+
         //AtomicInteger is safe to pass into a stream
-        graphics.drawString(prompt, (Game.DIM.width / 2 - 200) ,
-                Game.DIM.height - 100);
-        int num = 100;
-        while (num-- > 0){
-            repaint();
-        }
+        final AtomicInteger spacer = new AtomicInteger(0);
+        Arrays.stream(lines)
+                .forEach(str ->
+                        graphics.drawString(str, (Game.DIM.width / 2 - 200),
+                                Game.DIM.height - 100));
 
 
     }

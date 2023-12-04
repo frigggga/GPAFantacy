@@ -23,16 +23,12 @@ public class Projectile extends Sprite {
         this.tower = tower;
         this.type = tower.getType();
 
-        setExpiry(20);
+        setExpiry(40);
         setTeam(Team.PROJECTILE);
+        thisEnemy = enemy;
         setColor(color);
-        setOrientation((int) calculateOrientation(tower.getRow(), tower.getCol(), enemy.getRow(), enemy.getCol()));
         setCenter(new Point(Space.TS_WIDTH / 2 + startRow * Space.TS_WIDTH, Space.TS_HEIGHT/ 2 + startCol * Space.TS_HEIGHT));
         setRadius((int) radius);
-        double vectorX = Math.cos(Math.toRadians(getOrientation())) * 6;
-        double vectorY = Math.sin(Math.toRadians(getOrientation())) * 6;
-        setDeltaX(vectorX);
-        setDeltaY(vectorY);
 
 
     }
@@ -59,20 +55,15 @@ public class Projectile extends Sprite {
         this.type = type;
     }
 
-    public double calculateOrientation(int ax, int ay, int bx, int by) {
-        // Calculate the angle in radians
-        double angleRadians = Math.atan2(by - ay, bx - ax);
-
-        // Convert radians to degrees
+    public static double calculateOrientation(double x1, double y1, double x2, double y2) {
+        double angleRadians = Math.atan2(x2 - x1, y2 - y1);
         double angleDegrees = Math.toDegrees(angleRadians);
-
-        // Normalize the angle to the range 0-359
         if (angleDegrees < 0) {
             angleDegrees += 360;
         }
-
         return angleDegrees;
     }
+
 
     @Override
     public void draw(Graphics g) {
@@ -85,7 +76,11 @@ public class Projectile extends Sprite {
         if (getCenter().x > Game.DIM.width || getCenter().x < 0 || getCenter().y > Game.DIM.height || getCenter().y < 0) {
             setExpiry(1);
         } else {
-            setOrientation((int) calculateOrientation(tower.getRow(), tower.getCol(), thisEnemy.getRow(), thisEnemy.getCol()));
+            setOrientation((int) calculateOrientation(tower.getCenter().x, tower.getCenter().y, thisEnemy.getCenter().x , thisEnemy.getCenter().y));
+            double vectorX = Math.sin(Math.toRadians(getOrientation())) * 6;
+            double vectorY = Math.cos(Math.toRadians(getOrientation())) * 6;
+            setDeltaX(vectorX);
+            setDeltaY(vectorY);
             double newXPos = getCenter().x + getDeltaX();
             double newYPos = getCenter().y + getDeltaY();
             setCenter(new Point((int) newXPos, (int) newYPos));
@@ -97,9 +92,5 @@ public class Projectile extends Sprite {
 
     }
 
-    @Override
-    public void add(LinkedList<Movable> list) {
-        super.add(list);
-        Sound.playSound("thump.wav");
-    }
+
 }

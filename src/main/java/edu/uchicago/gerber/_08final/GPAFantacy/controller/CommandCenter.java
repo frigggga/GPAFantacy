@@ -24,7 +24,7 @@ public class CommandCenter {
 	private boolean muted;
 
 	private boolean gameEnd = false;
-	private boolean hasInitialized = false;
+	private boolean hasSpawnEnemy = false;
 	private boolean hasStarted = false;
 	private Tower selectedTower = null;
 	private Enemy boss = null;
@@ -32,6 +32,7 @@ public class CommandCenter {
 	private int isPlacingTower = -1;
 	private int nEnemiesReachMonument = 0;
 	private int totalEnemy = 0;
+	private int speed = 0;
 
 	private int selectedRow;
 	private int selectedCol;
@@ -87,7 +88,6 @@ public class CommandCenter {
 
 //the player can now place towers
 	public void initGame() {
-		hasInitialized = true;
 		monument = new Monument(Difficulty.EASY.getHealth());
 		clearAll();
 		setLevel(1);
@@ -102,35 +102,34 @@ public class CommandCenter {
 		opsQueue.enqueue(monument, GameOp.Action.ADD);
 		initTime = System.currentTimeMillis();
 		totalEnemy =  numberEnemies;
+		speed = 20;
 	}
 
 	//officially start the game
 	public void startGame() {
-		while(hasStarted)
-			if(!paused){
-				spawnEnemies();
-				towersAttack();
-			}
+		spawnEnemies();
+		towersAttack();
 	}
 
 	public void advanceLevel(int curLevel) {
-		clearAll();
 		this.level = curLevel + 1;
+		setScore(score + 1000);
 		setPaused(false);
+		hasSpawnEnemy = false;
 		if (curLevel == 1) {
-			currentGold = Difficulty.MEDIUM.getInitialGold();
-			curHealth = Difficulty.MEDIUM.getHealth();
+			currentGold += Difficulty.MEDIUM.getInitialGold();
 			numberEnemies = Difficulty.MEDIUM.getEnemy();
 			nEnemiesToKill = numberEnemies;
 			nEnemiesReachMonument = 0;
 			totalEnemy = numberEnemies;
+			speed = 15;
 		} else if (curLevel == 2) {
-			currentGold = Difficulty.HARD.getInitialGold();
-			curHealth = Difficulty.HARD.getHealth();
+			currentGold += Difficulty.HARD.getInitialGold();
 			numberEnemies = Difficulty.HARD.getEnemy();
 			nEnemiesToKill = numberEnemies;
 			nEnemiesReachMonument = 0;
 			totalEnemy = numberEnemies;
+			speed = 20;
 		} else {
 			//achieved the highest level, jump to game over screen
 			setGameEnd(true);
@@ -191,9 +190,9 @@ public class CommandCenter {
 		selectedTower.changeGridPosition(xVal, yVal);
 	}
 
-//generate a list of enemies each 20 frames, until it has reached the bound of maximum eneny number set by the game difficulty
+//generate a list of enemies according to speed, until it has reached the bound of maximum eneny number set by the game difficulty
 	public void spawnEnemies() {
-		if (numberEnemies > 0 && frame % 20 == 0) {
+		if (numberEnemies > 0 && frame % speed == 0) {
 			Enemy toAdd;
 			if (numberEnemies == 1) {
 				toAdd = new Boss();
@@ -216,6 +215,7 @@ public class CommandCenter {
 						break;
 				}
 			}
+			hasSpawnEnemy = true;
 			opsQueue.enqueue(toAdd, GameOp.Action.ADD);
 			numberEnemies--;
 		}
@@ -224,9 +224,12 @@ public class CommandCenter {
 //generate projectiles and set the orientation of the projectile to enemy
 	public void towersAttack() {
 		for (Tower tower : getTowers()) {
-			for (Projectile projectile : tower.attack(movEnemy)) {
-				opsQueue.enqueue(projectile, GameOp.Action.ADD);
+			if(movEnemy.size() > 0){
+				for (Projectile projectile : tower.attack(movEnemy)) {
+					opsQueue.enqueue(projectile, GameOp.Action.ADD);
+				}
 			}
+
 		}
 	}
 
@@ -248,14 +251,18 @@ public class CommandCenter {
 
 	//check if all enemies have reached the monument or has been killed
 	public boolean checkAllEnemy(){
-		for(Movable mov : movEnemy){
-			Enemy castEnemy = (Enemy) mov;
-			if(!castEnemy.hasReachedMonument() || castEnemy.getCurHealth() == 0){
-				return false;
-			}
+		if(!hasSpawnEnemy){
+			return false;
+		}else {
+			for (Movable mov : movEnemy) {
+				Enemy castEnemy = (Enemy) mov;
+				if (hasSpawnEnemy && (!castEnemy.hasReachedMonument() || castEnemy.getCurHealth() > 0)) {
+					return false;
+				}
 
+			}
+			return true;
 		}
-		return true;
 	}
 
 
@@ -264,7 +271,7 @@ public class CommandCenter {
 		frame = frame < Long.MAX_VALUE ? frame + 1 : 0;
 	}
 
-	private void clearAll(){
+	public void clearAll(){
 		movProjectile.clear();
 		movEnemy.clear();
 		movFloater.clear();
@@ -273,10 +280,6 @@ public class CommandCenter {
 
 	public boolean isGameOver() {
 		return gameEnd;
-	}
-
-	public boolean hasInitialized(){
-		return hasInitialized;
 	}
 
 	public boolean hasStarted(){

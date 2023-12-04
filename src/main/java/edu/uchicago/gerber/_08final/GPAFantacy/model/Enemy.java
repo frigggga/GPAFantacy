@@ -115,8 +115,9 @@ public abstract class Enemy extends Sprite {
         if(isDead() || hasReachedMonument()){
             setExpiry(1);
         }
-
-        if(map[row][col + 1] == TileType.PATH.getValue()){ //right column has a path
+        if(row == 5 || row == 6) {
+            setDeltaY(speed);
+        } else if(map[row][col + 1] == TileType.PATH.getValue()){ //right column has a path
             setDeltaX(speed);
         }else if(map[row + 1][col] == TileType.PATH.getValue()){ // path is below this path
             setDeltaY(speed);
@@ -124,24 +125,25 @@ public abstract class Enemy extends Sprite {
             setDeltaY(-speed);
         }else if(map[row][col - 1] == TileType.PATH.getValue()){
             setDeltaX(-speed);
+        }else if(row == 5 || row == 6){
+            setDeltaY(speed);
         }
         double newXPos = getCenter().x + getDeltaX();
         double newYPos = getCenter().y + getDeltaY();
         setCenter(new Point((int) newXPos, (int) newYPos));
-        setCoord(getCenter().y/50, getCenter().x/50);
+        setCoord((getCenter().y + 25) /50, (getCenter().x - 25)/50);
 
     }
 
     @Override
     public void remove(LinkedList<Movable> list) {
         super.remove(list);
-        CommandCenter.getInstance().updateScore(10);
-        Sound.playSound("theme.wav");
+        Sound.playSound("laser.wav");
     }
 
     @Override
     public void add(LinkedList<Movable> list) {
-        super.remove(list);
+        super.add(list);
         Sound.playSound("shieldup.wav");
     }
 }

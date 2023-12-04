@@ -23,7 +23,7 @@ public class Quiz extends Enemy {
 
     @Override
     public void setMaxHealth() {
-        this.maxHealth = 2000;
+        this.maxHealth = 300;
     }
 
     @Override

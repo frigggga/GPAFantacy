@@ -1,4 +1,5 @@
-Press 1 to Purchase Practice Questions: Cost: 100
+Quick video walk through:
+https://youtu.be/h5qcY-l8ksAPress 1 to Purchase Practice Questions: Cost: 100
 
 Press 2 to Review Course Notes: Cost: 200
 

@@ -10,7 +10,7 @@ public class Homework extends Enemy {
 
     public Homework() {
         super();
-        this.speed = 8;
+        this.speed = 7;
         this.attack = 2;
         Map<Integer, BufferedImage> rasterMap = new HashMap<>();
         rasterMap.put(HOMEWORK_IMAGE, loadGraphic("/imgs/game/img_red.png") );
@@ -36,7 +36,7 @@ public class Homework extends Enemy {
 
     @Override
     public void setMaxHealth() {
-        this.maxHealth = 600;
+        this.maxHealth = 100;
     }
 
 }

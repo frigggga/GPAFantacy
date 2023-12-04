@@ -89,7 +89,7 @@ public class GamePanel extends Panel {
         initFontInfo();
         gameFrame.setSize(dim);
         //change the name of the game-frame to your game name
-        gameFrame.setTitle("Game Base");
+        gameFrame.setTitle("GPA Protection");
         gameFrame.setResizable(false);
         gameFrame.setVisible(true);
         setFocusable(true);

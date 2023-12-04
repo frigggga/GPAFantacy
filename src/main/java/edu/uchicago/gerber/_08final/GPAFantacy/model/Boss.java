@@ -12,7 +12,7 @@ public class Boss extends Enemy {
 
     public Boss() {
         super();
-        this.attack = 10000;
+        this.attack = 200;
         this.speed = 1;
         Map<Integer, BufferedImage> rasterMap = new HashMap<>();
         rasterMap.put(BOSS_IMAGE, loadGraphic("/imgs/game/boss.gif") );
@@ -22,7 +22,7 @@ public class Boss extends Enemy {
 
     @Override
     public void setMaxHealth() {
-        this.maxHealth = 5000;
+        this.maxHealth = 800;
     }
 
     @Override

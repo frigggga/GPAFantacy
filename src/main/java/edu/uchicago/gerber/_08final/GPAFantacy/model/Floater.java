@@ -44,7 +44,6 @@ public class Floater extends Sprite {
                 break;
 
         }
-        rasterMap.put(0, loadGraphic("/imgs/game/img_red.png") );
         setRasterMap(rasterMap);
 
 
@@ -62,7 +61,7 @@ public class Floater extends Sprite {
 
     @Override
     public void add(LinkedList<Movable> list) {
-        super.remove(list);
+        super.add(list);
         if (getExpiry() > 0) {
             Sound.playSound("nuke-up.wav");
         }

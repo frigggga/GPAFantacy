@@ -20,7 +20,7 @@ public class Project extends Enemy {
 
     @Override
     public void setMaxHealth() {
-        this.maxHealth = 1150;
+        this.maxHealth = 400;
     }
 
     @Override

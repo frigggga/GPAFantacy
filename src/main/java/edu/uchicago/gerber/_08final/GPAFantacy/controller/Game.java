@@ -101,6 +101,9 @@ public class Game implements Runnable, KeyListener {
 
             checkCollisions();
             checkNewLevel();
+            if(CommandCenter.getInstance().hasStarted() && ! CommandCenter.getInstance().isPaused()){
+                CommandCenter.getInstance().startGame();
+            }
             //this method will execute add() and remove() callbacks on Movable objects
             processGameOpsQueue();
             //keep track of the frame for development purposes
@@ -169,7 +172,9 @@ public class Game implements Runnable, KeyListener {
                     CommandCenter.getInstance().getOpsQueue().enqueue(movPrj, GameOp.Action.REMOVE);
                     //change the health bar of each enemy
                     castEnemy.receiveDamage(castPrj.getDamage());
+                    Sound.playSound("thump.wav");
                     if (castEnemy.isDead()) {
+                        CommandCenter.getInstance().updateScore(castEnemy.getBounty());
                         CommandCenter.getInstance().getOpsQueue().enqueue(castEnemy, GameOp.Action.REMOVE);
                     }
 
@@ -220,11 +225,10 @@ public class Game implements Runnable, KeyListener {
 
 
     private void checkNewLevel() {
-        if (CommandCenter.getInstance().checkAllEnemy()) {
+        if (CommandCenter.getInstance().checkAllEnemy() && CommandCenter.getInstance().hasStarted()) {
             int oldLevel = CommandCenter.getInstance().getLevel();
             if (oldLevel == 3) {
                 CommandCenter.getInstance().setGameEnd(true);
-                System.exit(0);
             } else {
                 CommandCenter.getInstance().advanceLevel(oldLevel);
             }
@@ -252,7 +256,6 @@ public class Game implements Runnable, KeyListener {
         }if (keyCode == START && ! CommandCenter.getInstance().hasStarted()){
             CommandCenter.getInstance().setPrompt("Game Started");
             CommandCenter.getInstance().setHasStarted(true);
-            CommandCenter.getInstance().startGame();
             return;
         }
 

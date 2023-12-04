@@ -22,7 +22,7 @@ public class Monument extends Sprite {
         rasterMap.put(MONUMENT_IMAGE, loadGraphic("/imgs/game/monument.png") );
         setRasterMap(rasterMap);
 
-        setRadius(100);
+        setRadius(110);
         setTeam(Team.FRIEND);
         setCenter(new Point(700, 450));
     }

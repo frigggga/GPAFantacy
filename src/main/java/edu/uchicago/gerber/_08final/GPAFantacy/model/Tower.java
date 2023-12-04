@@ -59,11 +59,21 @@ public abstract class Tower extends Sprite {
             int distance = (int) Math.sqrt(Math.pow(castEnemy.getRow() - this.row, 2)
                     + Math.pow(castEnemy.getCol() - this.col, 2));
             if (distance < this.towerLevel.range) {
+                setOrientation((int) calculateOrientation(getCenter().x, getCenter().y, castEnemy.getCenter().x, castEnemy.getCenter().y));
                 list.add(getNewProjectile(castEnemy));
                 break;
             }
         }
         return list;
+    }
+
+    public static double calculateOrientation(double x1, double y1, double x2, double y2) {
+        double angleRadians = Math.atan2(x2 - x1, y1 - y2);
+        double angleDegrees = Math.toDegrees(angleRadians);
+        if (angleDegrees < 0) {
+            angleDegrees += 360;
+        }
+        return angleDegrees;
     }
 
     public abstract Projectile getNewProjectile(Enemy enemy);
