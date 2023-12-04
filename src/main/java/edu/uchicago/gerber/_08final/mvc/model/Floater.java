@@ -44,4 +44,5 @@ public abstract class Floater extends Sprite {
         renderVector(g);
     }
 
+
 }

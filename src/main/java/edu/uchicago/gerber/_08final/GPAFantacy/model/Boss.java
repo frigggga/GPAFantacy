@@ -15,7 +15,6 @@ public class Boss extends Enemy {
         this.attack = 10000;
         this.speed = 1;
         Map<Integer, BufferedImage> rasterMap = new HashMap<>();
-        //TODO: Change location
         rasterMap.put(BOSS_IMAGE, loadGraphic("/imgs/game/boss.gif") );
         setRasterMap(rasterMap);
     }
@@ -24,6 +23,11 @@ public class Boss extends Enemy {
     @Override
     public void setMaxHealth() {
         this.maxHealth = 5000;
+    }
+
+    @Override
+    public String getName(){
+        return "Final Exam";
     }
 
     @Override

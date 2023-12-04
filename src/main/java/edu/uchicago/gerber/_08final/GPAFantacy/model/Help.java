@@ -11,7 +11,6 @@ public class Help extends Tower {
     public Help(int row, int col) {
         super(row, col, 3);
         Map<Integer, BufferedImage> rasterMap = new HashMap<>();
-        //TODO: Change location
         rasterMap.put(HELP_IMAGE, loadGraphic("/imgs/game/img_help.png") );
         setRasterMap(rasterMap);
     }
@@ -19,7 +18,7 @@ public class Help extends Tower {
 
     @Override
     public Projectile getNewProjectile(Enemy enemy) {
-        return new Projectile(enemy, this, Color.BLUE, 12);
+        return new Projectile(enemy, this, Color.BLUE, 16);
     }
 
     @Override

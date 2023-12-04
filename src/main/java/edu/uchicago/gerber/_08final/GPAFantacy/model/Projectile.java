@@ -1,15 +1,16 @@
 package edu.uchicago.gerber._08final.GPAFantacy.model;
 
 
-import edu.uchicago.gerber._08final.GPAFantacy.controller.CommandCenter;
 import edu.uchicago.gerber._08final.GPAFantacy.controller.Game;
-import edu.uchicago.gerber._08final.GPAFantacy.controller.GameOp;
+import edu.uchicago.gerber._08final.mvc.controller.Sound;
 
 import java.awt.*;
+import java.util.LinkedList;
 
 public class Projectile extends Sprite {
-    private Enemy enemy;
+    private int damage;
     private Tower tower;
+    private Enemy thisEnemy;
     private int startRow;
     private int startCol;
     private int type;
@@ -18,7 +19,7 @@ public class Projectile extends Sprite {
         super();
         this.startCol = tower.getCol();
         this.startRow = tower.getRow();
-        this.enemy = enemy;
+        this.damage = tower.getAttack();
         this.tower = tower;
         this.type = tower.getType();
 
@@ -28,13 +29,15 @@ public class Projectile extends Sprite {
         setOrientation((int) calculateOrientation(tower.getRow(), tower.getCol(), enemy.getRow(), enemy.getCol()));
         setCenter(new Point(Space.TS_WIDTH / 2 + startRow * Space.TS_WIDTH, Space.TS_HEIGHT/ 2 + startCol * Space.TS_HEIGHT));
         setRadius((int) radius);
+        double vectorX = Math.cos(Math.toRadians(getOrientation())) * 6;
+        double vectorY = Math.sin(Math.toRadians(getOrientation())) * 6;
+        setDeltaX(vectorX);
+        setDeltaY(vectorY);
 
 
     }
 
-    public Enemy getEnemy() {
-        return enemy;
-    }
+    public int getDamage(){ return damage;}
 
     public int getStartRow() {
         return startRow;
@@ -76,11 +79,13 @@ public class Projectile extends Sprite {
         g.setColor(this.getColor());
         g.fillOval(getCenter().x, getCenter().y, getRadius(), getRadius());
     }
+
     @Override
     public void move(){
         if (getCenter().x > Game.DIM.width || getCenter().x < 0 || getCenter().y > Game.DIM.height || getCenter().y < 0) {
             setExpiry(1);
         } else {
+            setOrientation((int) calculateOrientation(tower.getRow(), tower.getCol(), thisEnemy.getRow(), thisEnemy.getCol()));
             double newXPos = getCenter().x + getDeltaX();
             double newYPos = getCenter().y + getDeltaY();
             setCenter(new Point((int) newXPos, (int) newYPos));
@@ -90,5 +95,11 @@ public class Projectile extends Sprite {
         //the default value of expiry is zero, so this block will only apply to expiring sprites
         super.expire();
 
+    }
+
+    @Override
+    public void add(LinkedList<Movable> list) {
+        super.add(list);
+        Sound.playSound("thump.wav");
     }
 }

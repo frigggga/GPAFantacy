@@ -5,19 +5,17 @@ import edu.uchicago.gerber._08final.GPAFantacy.controller.CommandCenter;
 import edu.uchicago.gerber._08final.GPAFantacy.controller.Game;
 import edu.uchicago.gerber._08final.GPAFantacy.model.Enemy;
 import edu.uchicago.gerber._08final.GPAFantacy.model.Movable;
+import edu.uchicago.gerber._08final.GPAFantacy.model.Space;
 import edu.uchicago.gerber._08final.GPAFantacy.model.Tower;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.awt.event.*;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+
+import static edu.uchicago.gerber._08final.GPAFantacy.controller.CommandCenter.map;
 
 
 public class GamePanel extends Panel implements MouseListener, MouseMotionListener {
@@ -73,29 +71,24 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
         graphics.setFont(fontNormal);
 
         //draw score always
-        graphics.drawString("Score :  " + CommandCenter.getInstance().getScore(), 20, 700);
+        graphics.drawString("Score :  " + CommandCenter.getInstance().getScore(), 20, 690);
 
         //draw the level upper-left corner always
         String levelText = "Level: " + CommandCenter.getInstance().getLevel();
-        graphics.drawString(levelText, 20, 720); //upper-left corner
+        graphics.drawString(levelText, 20, 710); //upper-left corner
 
         String goldText = "Gold: " + CommandCenter.getInstance().getCurrentGold();
-        graphics.drawString(goldText, 20, 740); //upper-left corner
+        graphics.drawString(goldText, 20, 730); //upper-left corner
 
         String statusText = "Number of Enemies Remaining: " + CommandCenter.getInstance().getNEnemiesToKill();
-        graphics.drawString(statusText, 20, 760); //upper-left corner
+        graphics.drawString(statusText, 20, 750); //upper-left corner
 
         //build the status string array with possible messages in middle of screen
-        List<String> statusArray = new ArrayList<>();
-        if (CommandCenter.getInstance().getNumberEnemies() < 1) statusArray.add("All enemies killed. Level up");
-        if(CommandCenter.getInstance().getPrompt()!= ""){
-            statusArray.add(CommandCenter.getInstance().getPrompt());
-            CommandCenter.getInstance().setPrompt("");
+        if (CommandCenter.getInstance().checkAllEnemy())
+        { CommandCenter.getInstance().setPrompt(" Advanced to the next level");}
+        if(CommandCenter.getInstance().getPrompt()!= "") {
+            displayTextOnScreen(graphics, CommandCenter.getInstance().getPrompt());
         }
-
-        //draw the statusArray strings to middle of screen
-        if (statusArray.size() > 0)
-            displayTextOnScreen(graphics, statusArray.toArray(new String[0]));
 
 
     }
@@ -115,12 +108,17 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
 
         //draw meter
         g.setColor(Color.GREEN);
-        int percentage = (int) CommandCenter.getInstance().getCurHealth() / CommandCenter.getInstance().getMonument().getMaxHealth();
-        g.fillRect(xVal, yVal, 100, 10);
+        double percentage = CommandCenter.getInstance().getCurHealth() / CommandCenter.getInstance().getMonument().getMaxHealth();
+        int width =(int) (percentage * 100);
+        g.fillRect(xVal, yVal, width, 10);
 
         //draw gray box
         g.setColor(Color.DARK_GRAY);
         g.drawRect(xVal, yVal, 100, 10);
+
+        g.setColor(Color.ORANGE);
+        g.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        g.drawString("Current GPA: " + 4.0 * percentage, xVal - 10, yVal - 30);
     }
 
     private void drawEnemyHealth(Graphics g){
@@ -132,9 +130,15 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
             //draw meter
             g.setColor(Color.RED);
             int percentage = castEnemy.getHealthPercentage();
-            g.fillRect(xVal, yVal, 50, 6);
-            g.setColor(Color.DARK_GRAY);
-            g.drawRect(xVal - 30, yVal - 30, 50, 6);
+            g.fillRect(xVal, yVal - 20, percentage, 6);
+            if(percentage > 0){
+                g.setColor(Color.DARK_GRAY);
+                g.drawRect(xVal, yVal - 20, 50, 6);
+
+                g.setColor(Color.white);
+                g.setFont(fontNormal);
+                g.drawString(castEnemy.getName(), xVal, yVal- 30 );
+            }
         }
     }
 
@@ -153,12 +157,12 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
         grpOff.setColor(Color.BLACK);
         grpOff.fillRect(0, 0, Game.DIM.width, Game.DIM.height);
 
-        //TODO: DRAW inital game stage
+
 
         //this is used for development, you may remove drawNumFrame() in your final game.
         drawNumFrame(grpOff);
         drawMenu(grpOff);
-//TODO: add prompt time countdown 30 seconds
+
         if (CommandCenter.getInstance().hasInitialized()) {
 
 
@@ -172,16 +176,10 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
             drawMonumentHealth(grpOff);
             drawEnemyHealth(grpOff);
             drawGameStatus(grpOff);
-            //TODO: not checked, may double
+
+
             if(CommandCenter.getInstance().getIsPlacingTower() > 0 && CommandCenter.getInstance().getSelectedTower() != null) {
                 CommandCenter.getInstance().moveTower(mouseX, mouseY);
-
-//            displayTextOnScreen(grpOff,
-//                    "Rules of the game:\n" +
-//                            "1. Use number keys to purchase a tower, click again to \n" + "place towers on the map to stop enemies from reaching your GPA base.\n" +
-//                            "2. You earn gold for stopping enemies, \n" + "p use gold to purchase new towers or press u to upgrade tower.\n" +
-//                            "3. When you are ready, press s key to start the game." +
-//                            "4. If you stop kill all enemies you win, \n" + " but if your base has no health you lose.");
             }
 
         } else if (CommandCenter.getInstance().isPaused()) {
@@ -189,30 +187,6 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
             displayTextOnScreen(grpOff, "Game Paused");
 
         }
-
-//        //playing and not paused!
-//        else {
-//
-//
-//            moveDrawMovables(grpOff,
-//                    CommandCenter.getInstance().getMovProjectile(),
-//                    CommandCenter.getInstance().getMovFloater(),
-//                    CommandCenter.getInstance().getMovEnemy(),
-//                    CommandCenter.getInstance().getMovFriend());
-//
-//
-//            drawMonumentHealth(grpOff);
-//            drawEnemyHealth(grpOff);
-//            drawGameStatus(grpOff);
-//            //TODO: not checked, may double
-//            if(CommandCenter.getInstance().getIsPlacingTower() > 0 && CommandCenter.getInstance().getSelectedTower() != null){
-//                CommandCenter.getInstance().moveTower(mouseX, mouseY);
-//
-//            }
-//
-//
-//
-//        }
 
         //after drawing all the movables or text on the offscreen-image, copy it in one fell-swoop to graphics context
         // of the game panel, and show it for ~40ms. If you attempt to draw sprites directly on the gamePanel, e.g.
@@ -261,39 +235,35 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
         g.drawString("Press 2 to Review Course Notes: Cost: 200", 820, 170);					// cost for sun towers
         g.drawString("Press 3 to Ask Help From TA or Professor: Cost: 300", 820, 190);
 
-        g.drawString("Rules of the game:\n" +
-                "1. Use number keys to purchase a tower, click again to \n" + "place towers on the map to stop enemies from reaching your GPA base.\n" +
-                "2. You earn gold for stopping enemies, \n" + "p use gold to purchase new towers or press u to upgrade tower.\n" +
-                "3. When you are ready, press s key to start the game." +
-                "4. If you stop kill all enemies you win, \n" + " but if your base has no health you lose.", 820, 240);
-        g.drawString("1. Use number keys to purchase a tower, click again to \n", 820, 260);
-        g.drawString("place towers on the map to stop enemies from reaching your GPA base.\n" , 820, 280);
+        g.drawString("Rules of the game: ", 820, 220);
+        g.drawString("1. Use number keys{1, 2, 3} to purchase a tower, click a place\n", 820, 260);
+        g.drawString("on the map to place towers at your desired position to stop enemies. \n" , 820, 280);
         g.drawString( "2. You earn gold for stopping enemies, \n", 820, 300);
-        g.drawString( "p use gold to purchase new towers or press u to upgrade tower.\n" , 820, 320);
+        g.drawString( "use gold to purchase new towers\n" , 820, 320);
         g.drawString("3. When you are ready, press s key to start the game.", 820, 340);
-        g.drawString("4. If you stop kill all enemies you win, \n", 820, 360);
-        g.drawString(" but if your base has no health you lose.", 820, 380);
+        g.drawString("4. Press space key for any surprise. \n", 820, 360);
+        g.drawString("5. If your base has no health you lose.\n", 820, 380);
+        g.drawString("5. If you killed all enemies you win.", 820, 400);
 
         g.setFont(fontBig);
         g.drawString("GPA Protection", 820, 50);					// writes title
         g.drawLine(820, 55, 1080, 55);								// underscore
-        g.drawString("Towers", 820, 140);							// writes towers
-        g.drawLine(820, 145, 1080, 145);
+        g.drawString("Towers", 820, 130);							// writes towers
+        g.drawLine(820, 135, 1080, 135);
 
     }
 
 
     // This method draws some text to the middle of the screen
-    public void displayTextOnScreen(final Graphics graphics, String... lines) {
+    public void displayTextOnScreen(final Graphics graphics, String prompt) {
         graphics.setColor(Color.RED);
         //AtomicInteger is safe to pass into a stream
-        final AtomicInteger spacer = new AtomicInteger(0);
-        Arrays.stream(lines)
-                .forEach(str ->
-                            graphics.drawString(str, (Game.DIM.width / 2 - 200) ,
-                                    Game.DIM.height - 100)
-
-                );
+        graphics.drawString(prompt, (Game.DIM.width / 2 - 200) ,
+                Game.DIM.height - 100);
+        int num = 100;
+        while (num-- > 0){
+            repaint();
+        }
 
 
     }

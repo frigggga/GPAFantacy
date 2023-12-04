@@ -13,10 +13,9 @@ public class Quiz extends Enemy {
 
     public Quiz() {
         super();
-        this.speed = 8;
+        this.speed = 4;
         this.attack = 5;
         Map<Integer, BufferedImage> rasterMap = new HashMap<>();
-        //TODO: Change location
         rasterMap.put(QUIZ_IMAGE, loadGraphic("/imgs/game/img_yellow.png" ));
         setRasterMap(rasterMap);
 
@@ -24,7 +23,12 @@ public class Quiz extends Enemy {
 
     @Override
     public void setMaxHealth() {
-        this.maxHealth = 400;
+        this.maxHealth = 2000;
+    }
+
+    @Override
+    public String getName(){
+        return "Quiz";
     }
 
     @Override

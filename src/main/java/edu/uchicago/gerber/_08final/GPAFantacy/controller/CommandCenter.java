@@ -1,7 +1,6 @@
 package edu.uchicago.gerber._08final.GPAFantacy.controller;
 
 import edu.uchicago.gerber._08final.GPAFantacy.model.*;
-import edu.uchicago.gerber._08final.mvc.model.Bullet;
 import lombok.Data;
 
 import java.awt.*;
@@ -24,13 +23,15 @@ public class CommandCenter {
 	private boolean paused;
 	private boolean muted;
 
-	private boolean gameEnd = true;
+	private boolean gameEnd = false;
 	private boolean hasInitialized = false;
 	private boolean hasStarted = false;
 	private Tower selectedTower = null;
 	private Enemy boss = null;
 	private String prompt = "";
 	private int isPlacingTower = -1;
+	private int nEnemiesReachMonument = 0;
+	private int totalEnemy = 0;
 
 	private int selectedRow;
 	private int selectedCol;
@@ -39,7 +40,8 @@ public class CommandCenter {
 	private long frame;
 	private long initTime = 0;
 
-	private Monument monument = new Monument(Difficulty.EASY.getHealth());
+	private Monument monument;
+	private Enemy thisEnemy = null;
 
 	//lists containing our movables subdivided by team
 	private final LinkedList<Movable> movProjectile = new LinkedList<>();
@@ -47,12 +49,11 @@ public class CommandCenter {
 	private final LinkedList<Movable> movEnemy = new LinkedList<>();
 	private final LinkedList<Movable> movFloater = new LinkedList<>();
 
-	private List<Enemy> enemies = new ArrayList<>();
 	private List<Tower> towers = new ArrayList<>();
 
 	//create board as a grid of target spaces
 	private Space[][] grid = new Space[12][16];
-	private final int[][] map = {
+	public static int[][] map = {
 			{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 			{1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0},
 			{0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0},
@@ -84,9 +85,10 @@ public class CommandCenter {
 		return instance;
 	}
 
-
+//the player can now place towers
 	public void initGame() {
 		hasInitialized = true;
+		monument = new Monument(Difficulty.EASY.getHealth());
 		clearAll();
 		setLevel(1);
 		setPaused(false);
@@ -99,8 +101,10 @@ public class CommandCenter {
 		setUpGrid();
 		opsQueue.enqueue(monument, GameOp.Action.ADD);
 		initTime = System.currentTimeMillis();
+		totalEnemy =  numberEnemies;
 	}
 
+	//officially start the game
 	public void startGame() {
 		while(hasStarted)
 			if(!paused){
@@ -118,17 +122,22 @@ public class CommandCenter {
 			curHealth = Difficulty.MEDIUM.getHealth();
 			numberEnemies = Difficulty.MEDIUM.getEnemy();
 			nEnemiesToKill = numberEnemies;
+			nEnemiesReachMonument = 0;
+			totalEnemy = numberEnemies;
 		} else if (curLevel == 2) {
 			currentGold = Difficulty.HARD.getInitialGold();
 			curHealth = Difficulty.HARD.getHealth();
 			numberEnemies = Difficulty.HARD.getEnemy();
 			nEnemiesToKill = numberEnemies;
+			nEnemiesReachMonument = 0;
+			totalEnemy = numberEnemies;
 		} else {
 			//achieved the highest level, jump to game over screen
 			setGameEnd(true);
 		}
 	}
 
+	//set a grid with space object to draw map on panel
 	public void setUpGrid() {
 		//set up grid before the game loads
 		for (int i = 0; i < grid.length; i++) {
@@ -139,7 +148,7 @@ public class CommandCenter {
 				} else if (map[i][j] == TileType.MONUMENT.getValue()) {
 					grid[i][j] = new Space(i, j, TileType.MONUMENT);
 				} else if (map[i][j] == TileType.PATH.getValue()) {
-					grid[i][j] = new Space(i + 1, j + 1, TileType.PATH);
+					grid[i][j] = new Space(i, j, TileType.PATH);
 				} else {
 					grid[i][j] = new Space(i, j, TileType.REGULAR);
 				}
@@ -178,18 +187,13 @@ public class CommandCenter {
 		towers.add(selectedTower);
 		currentGold -= selectedTower.getTowerLevel().upgradeCost;
 		grid[row][col].setTileType(TileType.DEAD_TILE); // already has a tower
+		map[row][col] = 3;
 		selectedTower.changeGridPosition(xVal, yVal);
 	}
 
-	//TODO: change the speed & enemy constructor
-// else if(frameCounter % 5 == 0 && frameCounter >= 250)	// fast
-//	 	{
-//	 		enemies.add(new Asteroid(line.getStart()));
-//	 		enemies.add(new Alien(line.getStart()));
-//	 		enemies.add(new Comet(line.getStart()));
-//	 	}
+//generate a list of enemies each 20 frames, until it has reached the bound of maximum eneny number set by the game difficulty
 	public void spawnEnemies() {
-		if (numberEnemies > 0 && frame % 10 == 0) {
+		if (numberEnemies > 0 && frame % 20 == 0) {
 			Enemy toAdd;
 			if (numberEnemies == 1) {
 				toAdd = new Boss();
@@ -212,55 +216,46 @@ public class CommandCenter {
 						break;
 				}
 			}
-			enemies.add(toAdd);
 			opsQueue.enqueue(toAdd, GameOp.Action.ADD);
 			numberEnemies--;
 		}
 	}
 
-//TODO: update enemies list by changing the isDead() function to return dead enemy
+//generate projectiles and set the orientation of the projectile to enemy
 	public void towersAttack() {
 		for (Tower tower : getTowers()) {
-			for (Projectile projectile : tower.attack(getEnemies())) {
+			for (Projectile projectile : tower.attack(movEnemy)) {
 				opsQueue.enqueue(projectile, GameOp.Action.ADD);
-				Enemy enemy = projectile.getEnemy();
-				enemy.receiveDamage(tower.getAttack());
-				if (enemy.isDead()) {
-					currentGold += enemy.getBountyToCollect();
-					score += enemy.getBountyToCollect() * 10;
-					enemies.remove(enemy);
-					opsQueue.enqueue(enemy, GameOp.Action.REMOVE);
-					nEnemiesToKill--;
-				}
 			}
 		}
+	}
+
+	public void updateScore(int bounty){
+		currentGold += bounty;
+		Random r = new Random();
+		score += bounty * 100 + r.nextInt(50);
+		nEnemiesToKill--;
 	}
 
 	public void setTile(int row, int col){
 		grid[row][col].setTileType(TileType.SELECTED);
 	}
 
-	public int upgrade(){
-		if(selectedTower != null){
-			int goldNeeded = selectedTower.getTowerLevel().upgradeCost;
-			if(currentGold >= goldNeeded){
-				selectedTower.upgrade();
-				currentGold -= goldNeeded;
-				selectedTower = null;
-				return 1;
-			}else { // not enough gold
-				setPrompt("Not enough gold to upgrade tower");
-				return -1;
-			}
-		}else{ // tower not selected
-			setPrompt("You need to select a tower to upgrade");
-				return -2;
-			}
-
-	}
-
 	public void updateMonumentHealth(int damage){
 		curHealth -= damage;
+	}
+
+
+	//check if all enemies have reached the monument or has been killed
+	public boolean checkAllEnemy(){
+		for(Movable mov : movEnemy){
+			Enemy castEnemy = (Enemy) mov;
+			if(!castEnemy.hasReachedMonument() || castEnemy.getCurHealth() == 0){
+				return false;
+			}
+
+		}
+		return true;
 	}
 
 

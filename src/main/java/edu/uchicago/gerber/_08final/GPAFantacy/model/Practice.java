@@ -11,7 +11,6 @@ public class Practice extends Tower {
     public Practice(int row, int col) {
         super(row, col, 1);
         Map<Integer, BufferedImage> rasterMap = new HashMap<>();
-        //TODO: Change location
         rasterMap.put(PRACTICE_IMAGE, loadGraphic("/imgs/game/img_practice.png") );
         setRasterMap(rasterMap);
     }
@@ -19,7 +18,7 @@ public class Practice extends Tower {
 
     @Override
     public Projectile getNewProjectile(Enemy enemy) {
-        return new Projectile(enemy, this, Color.RED, 5);
+        return new Projectile(enemy, this, Color.RED, 6);
     }
 
     @Override

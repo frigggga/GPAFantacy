@@ -2,11 +2,10 @@ package edu.uchicago.gerber._08final.GPAFantacy.model;
 
 
 import edu.uchicago.gerber._08final.GPAFantacy.controller.CommandCenter;
+import edu.uchicago.gerber._08final.mvc.controller.Sound;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
 
 public abstract class Enemy extends Sprite {
     protected int curHealth;
@@ -14,7 +13,8 @@ public abstract class Enemy extends Sprite {
     protected int maxHealth;
     protected double speed;
     protected boolean eliminated = false;
-    protected static final int[][] map = CommandCenter.getInstance().getMap();
+    protected static int[][] map = CommandCenter.getInstance().map;
+    protected boolean hasReachedMonument = false;
 
 
     public abstract void setMaxHealth();
@@ -47,8 +47,10 @@ public abstract class Enemy extends Sprite {
         setRadius(Space.TS_WIDTH / 2);
         setOrientation(0); //originally facing right
         setMaxHealth();
+        curHealth = maxHealth;
 
     }
+    public abstract String getName();
 
 
 
@@ -73,12 +75,16 @@ public abstract class Enemy extends Sprite {
     }
 
     public int getHealthPercentage(){
-        System.out.println(this.curHealth / this.maxHealth);
-        return (int) this.curHealth / this.maxHealth;
+        double percent = this.curHealth / this.maxHealth;
+        return (int) (percent * 50);
     }
 
     public boolean isDead() {
-        return eliminated;
+        return curHealth == 0;
+    }
+
+    public boolean hasReachedMonument(){
+        return hasReachedMonument;
     }
 
 
@@ -92,22 +98,31 @@ public abstract class Enemy extends Sprite {
         return 0;
     }
 
+    public void setReachedMonument(boolean b){
+        hasReachedMonument = b;
+    }
+
+    public int getCurHealth(){
+        return curHealth;
+    }
+
     // if right column is a path, go right
     // if not, go up or down
     @Override
     public void move() {
         setDeltaY(0);
         setDeltaX(0);
-        if(isDead()){
-            setExpiry(2);
+        if(isDead() || hasReachedMonument()){
+            setExpiry(1);
         }
+
         if(map[row][col + 1] == TileType.PATH.getValue()){ //right column has a path
             setDeltaX(speed);
         }else if(map[row + 1][col] == TileType.PATH.getValue()){ // path is below this path
             setDeltaY(speed);
-        }else if(map[row + 1][col] == TileType.PATH.getValue()){ // up path
+        }else if(map[row - 1][col] == TileType.PATH.getValue()){ // up path
             setDeltaY(-speed);
-        }else{
+        }else if(map[row][col - 1] == TileType.PATH.getValue()){
             setDeltaX(-speed);
         }
         double newXPos = getCenter().x + getDeltaX();
@@ -117,4 +132,16 @@ public abstract class Enemy extends Sprite {
 
     }
 
+    @Override
+    public void remove(LinkedList<Movable> list) {
+        super.remove(list);
+        CommandCenter.getInstance().updateScore(10);
+        Sound.playSound("theme.wav");
+    }
+
+    @Override
+    public void add(LinkedList<Movable> list) {
+        super.remove(list);
+        Sound.playSound("shieldup.wav");
+    }
 }

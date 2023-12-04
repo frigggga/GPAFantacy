@@ -20,7 +20,7 @@ public class Review extends Tower {
 
     @Override
     public Projectile getNewProjectile(Enemy enemy) {
-        return new Projectile(enemy, this, Color.YELLOW, 8);
+        return new Projectile(enemy, this, Color.YELLOW, 10);
     }
 
     @Override

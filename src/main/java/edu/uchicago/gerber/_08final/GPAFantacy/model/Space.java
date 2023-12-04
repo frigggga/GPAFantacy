@@ -27,8 +27,8 @@ public class Space extends Sprite{
         pntCs.add(new Point(-1, -1));
         pntCs.add(new Point(-1, 1));
         setColor(tileType.getColor());
-        setCenter(new Point(Space.TS_WIDTH / 2 + y * Space.TS_WIDTH,
-                Space.TS_HEIGHT/ 2 + x * Space.TS_HEIGHT));
+        setCenter(new Point(25 + y * 50,
+                25 + x * 50));
 
         setRadius(25);
         setTeam(Team.FLOATER);
@@ -64,14 +64,11 @@ public class Space extends Sprite{
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(tileType.getColor());
         renderVector(g);
-//        if(tileType == tileType.SPAWN_POINT){
-//            Map<Integer, BufferedImage> rasterMap = new HashMap<>();
-//            //TODO: Change location
-//            rasterMap.put(0, loadGraphic("/imgs/game/point.png") );
-//            setRasterMap(rasterMap);
-//            renderRaster((Graphics2D) g, getRasterMap().get(0));
-//        }
+
+        if(tileType == tileType.PATH){
+            g.setColor(new Color(1, 1, 1, 0.5f));
+            g.fillRect(getCenter().x - 25, getCenter().y - 25, 50, 50);
+        }
     }
 }

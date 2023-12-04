@@ -26,7 +26,7 @@ public class Game implements Runnable, KeyListener {
     //this is used throughout many classes.
     public static final Random R = new Random();
 
-    public final static int ANIMATION_DELAY = 40; // milliseconds between frames
+    public final static int ANIMATION_DELAY = 100; // milliseconds between frames
 
     public final static int FRAMES_PER_SECOND = 1000 / ANIMATION_DELAY;
 
@@ -41,9 +41,8 @@ public class Game implements Runnable, KeyListener {
             TOWER2 = 50, // 2 key, purchase tower 2
             TOWER3 = 51, // 3 key, purchase tower 3
 
-    START = 83, // s key
-            UPGRADE = 85, // u key
-            SELECT = 32, // space key
+            START = 83, // s key
+            SURPRISE = 32, //space
             MUTE = 77; // m-key mute;
 
 
@@ -102,7 +101,6 @@ public class Game implements Runnable, KeyListener {
 
             checkCollisions();
             checkNewLevel();
-//            checkFloaters();
             //this method will execute add() and remove() callbacks on Movable objects
             processGameOpsQueue();
             //keep track of the frame for development purposes
@@ -125,13 +123,19 @@ public class Game implements Runnable, KeyListener {
         } // end while
     } // end run
 
-//    private void checkFloaters() {
-//        spawnNewWallFloater();
-//        spawnShieldFloater();
-//        spawnNukeFloater();
-//    }
+    private void checkFloaters() {
+        Floater floater = new Floater();
+        if(floater.getType() == Floater.Surprise.DAMAGE){
+            CommandCenter.getInstance().updateMonumentHealth(10);
+        }else if(floater.getType() == Floater.Surprise.HEALTH){
+            CommandCenter.getInstance().updateMonumentHealth(-10);
+        }else{
+            CommandCenter.getInstance().setCurrentGold(CommandCenter.getInstance().getCurrentGold() + +100);
+        }
+        CommandCenter.getInstance().getOpsQueue().enqueue(floater, GameOp.Action.ADD);
+    }
 
-    //TODO: Change
+
     private void checkCollisions() {
 
         Point pntPrjCenter, pntEnemyCenter;
@@ -140,15 +144,17 @@ public class Game implements Runnable, KeyListener {
 
             Point pntMonument = CommandCenter.getInstance().getMonument().getCenter();
             int radMonument = CommandCenter.getInstance().getMonument().getRadius();
+            Enemy castEnemy = (Enemy) movEnemy;
 
             pntEnemyCenter = movEnemy.getCenter();
             radEnemy = movEnemy.getRadius();
 
             if (pntMonument.distance(pntEnemyCenter) < (radMonument + radEnemy)) {
                 //enqueue the enemy
+                castEnemy.setReachedMonument(true);
+                CommandCenter.getInstance().setNEnemiesReachMonument(CommandCenter.getInstance().getNEnemiesReachMonument() + 1);
                 CommandCenter.getInstance().getOpsQueue().enqueue(movEnemy, GameOp.Action.REMOVE);
                 //update health bar of monument
-                Enemy castEnemy = (Enemy) movEnemy;
                 CommandCenter.getInstance().updateMonumentHealth(castEnemy.getAttack());
             }//end if
 
@@ -156,12 +162,16 @@ public class Game implements Runnable, KeyListener {
 
                 pntPrjCenter = movPrj.getCenter();
                 radPrj = movPrj.getRadius();
-
+                Projectile castPrj = (Projectile) movPrj;
                 //detect collision
                 if (pntPrjCenter.distance(pntEnemyCenter) < (radPrj + radEnemy)) {
                     //enqueue the projectile
                     CommandCenter.getInstance().getOpsQueue().enqueue(movPrj, GameOp.Action.REMOVE);
-                    //enqueue the foe TODO: change the health bar of each enemy
+                    //change the health bar of each enemy
+                    castEnemy.receiveDamage(castPrj.getDamage());
+                    if (castEnemy.isDead()) {
+                        CommandCenter.getInstance().getOpsQueue().enqueue(castEnemy, GameOp.Action.REMOVE);
+                    }
 
                 }
 
@@ -209,43 +219,12 @@ public class Game implements Runnable, KeyListener {
     }
 
 
-    //    private void spawnNewWallFloater() {
-//
-//        if (CommandCenter.getInstance().getFrame() % NewWallFloater.SPAWN_NEW_WALL_FLOATER == 0 && isBrickFree()) {
-//            CommandCenter.getInstance().getOpsQueue().enqueue(new NewWallFloater(), GameOp.Action.ADD);
-//        }
-//    }
-//
-//    private void spawnShieldFloater() {
-//
-//        if (CommandCenter.getInstance().getFrame() % ShieldFloater.SPAWN_SHIELD_FLOATER == 0) {
-//            CommandCenter.getInstance().getOpsQueue().enqueue(new ShieldFloater(), GameOp.Action.ADD);
-//        }
-//    }
-//
-//    private void spawnNukeFloater() {
-//
-//        if (CommandCenter.getInstance().getFrame() % NukeFloater.SPAWN_NUKE_FLOATER == 0) {
-//            CommandCenter.getInstance().getOpsQueue().enqueue(new NukeFloater(), GameOp.Action.ADD);
-//        }
-//    }
-//
-//
-//    //this method spawns new Large (0) Asteroids
-//    private void spawnBigAsteroids(int num) {
-//        while (num-- > 0) {
-//            //Asteroids with size of zero are big
-//            CommandCenter.getInstance().getOpsQueue().enqueue(new Asteroid(0), GameOp.Action.ADD);
-//
-//        }
-//    }
-
-
     private void checkNewLevel() {
-        if (CommandCenter.getInstance().getNEnemiesToKill() <= 0) {
+        if (CommandCenter.getInstance().checkAllEnemy()) {
             int oldLevel = CommandCenter.getInstance().getLevel();
             if (oldLevel == 3) {
                 CommandCenter.getInstance().setGameEnd(true);
+                System.exit(0);
             } else {
                 CommandCenter.getInstance().advanceLevel(oldLevel);
             }
@@ -286,6 +265,7 @@ public class Game implements Runnable, KeyListener {
             case QUIT:
                 System.exit(0);
                 break;
+
             default:
                 break;
         }
@@ -299,9 +279,6 @@ public class Game implements Runnable, KeyListener {
         System.out.println(keyCode);
 
         switch (keyCode) {
-            case UPGRADE:
-                CommandCenter.getInstance().upgrade();
-                break;
 
             case MUTE:
                 CommandCenter.getInstance().setMuted(!CommandCenter.getInstance().isMuted());
@@ -335,6 +312,9 @@ public class Game implements Runnable, KeyListener {
                     CommandCenter.getInstance().setSelectedTower(selectedTower);
                     CommandCenter.getInstance().getOpsQueue().enqueue(selectedTower, GameOp.Action.ADD);
                 }
+                break;
+            case SURPRISE:
+                checkFloaters();
                 break;
 
             default:

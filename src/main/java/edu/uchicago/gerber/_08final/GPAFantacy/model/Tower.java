@@ -46,19 +46,20 @@ public abstract class Tower extends Sprite {
     private long getCooldown() {
         return this.towerLevel.cooldown;
     }
-//TODO: Not checked yet
 
-    public List<Projectile> attack(List<Enemy> enemyList) {
+
+    public List<Projectile> attack(List<Movable> enemyList) {
         List<Projectile> list = new ArrayList<>();
         if (!towerReady()) {
             return list;
         }
         lastAttack = System.currentTimeMillis();
-        for (Enemy enemy : enemyList) {
-            int distance = (int) Math.sqrt(Math.pow(enemy.getRow() - this.row, 2)
-                    + Math.pow(enemy.getCol() - this.col, 2));
+        for (Movable enemy : enemyList) {
+            Enemy castEnemy = (Enemy) enemy;
+            int distance = (int) Math.sqrt(Math.pow(castEnemy.getRow() - this.row, 2)
+                    + Math.pow(castEnemy.getCol() - this.col, 2));
             if (distance < this.towerLevel.range) {
-                list.add(getNewProjectile(enemy));
+                list.add(getNewProjectile(castEnemy));
                 break;
             }
         }

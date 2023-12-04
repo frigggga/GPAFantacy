@@ -14,14 +14,18 @@ public class Project extends Enemy {
         this.speed = 4;
         this.attack = 10;
         Map<Integer, BufferedImage> rasterMap = new HashMap<>();
-        //TODO: Change location
         rasterMap.put(PROJECT_IMAGE, loadGraphic("/imgs/game/img_blue.png") );
         setRasterMap(rasterMap);
     }
 
     @Override
     public void setMaxHealth() {
-        this.maxHealth = 150;
+        this.maxHealth = 1150;
+    }
+
+    @Override
+    public String getName(){
+        return "Practice";
     }
 
 

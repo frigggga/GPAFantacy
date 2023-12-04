@@ -10,13 +10,13 @@ public class Homework extends Enemy {
 
     public Homework() {
         super();
-        this.speed = 5;
+        this.speed = 8;
         this.attack = 2;
         Map<Integer, BufferedImage> rasterMap = new HashMap<>();
-        //TODO: Change location
         rasterMap.put(HOMEWORK_IMAGE, loadGraphic("/imgs/game/img_red.png") );
         setRasterMap(rasterMap);
     }
+
 
     @Override
     public int getBounty() {
@@ -28,11 +28,17 @@ public class Homework extends Enemy {
         renderRaster((Graphics2D) g, getRasterMap().get(HOMEWORK_IMAGE));
     }
 
+    @Override
+    public String getName(){
+        return "Homework";
+    }
+
 
     @Override
     public void setMaxHealth() {
         this.maxHealth = 600;
     }
+
 }
 
 
