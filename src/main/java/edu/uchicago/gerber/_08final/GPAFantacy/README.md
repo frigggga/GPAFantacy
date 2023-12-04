@@ -13,3 +13,5 @@ Rules of the game:
 5. If your base has no health you lose,  If you killed all enemies you win.
 
 Please be slow to place your towers on the map. It can take some time for the game to detect your mouse position to place the towers. It may take up to 2-3 times until you can successfully put the tower on the correct tile.
+
+![Screenshot](screenshot.png)
