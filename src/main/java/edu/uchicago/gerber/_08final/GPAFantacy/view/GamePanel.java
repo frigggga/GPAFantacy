@@ -243,7 +243,7 @@ public class GamePanel extends Panel implements MouseListener, MouseMotionListen
         g.drawString("3. When you are ready, press s key to start the game.", 820, 340);
         g.drawString("4. Press space key for any surprise. \n", 820, 360);
         g.drawString("5. If your base has no health you lose.\n", 820, 380);
-        g.drawString("5. If you killed all enemies you win.", 820, 400);
+        g.drawString(" If you killed all enemies you win.", 820, 400);
 
         g.setFont(fontBig);
         g.drawString("GPA Protection", 820, 50);					// writes title
